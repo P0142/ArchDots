@@ -1,0 +1,143 @@
+/* High-Contrast Ebony Theme for Obsidian */
+.theme-dark,
+.theme-light {
+  /* Base Colors */
+  --color-base-00: #141414; /* Main background */
+  --color-base-05: #1a1a1a;
+  --color-base-10: #1f1f1f;
+  --color-base-20: #262626;
+  --color-base-25: #2e2e2e;
+  --color-base-30: #3a3a3a;
+  --color-base-35: #444444;
+  --color-base-40: #5a5a5a;
+  --color-base-50: #707070;
+  --color-base-60: #909090;
+  --color-base-70: #b0b0b0;
+  --color-base-100: #dbdeea; /* Bright text */
+
+  /* Accent Colors */
+  --color-red: #fd604f;
+  --color-orange: #ffaa7d;
+  --color-yellow: #f5df76;
+  --color-green: #afea7b;
+  --color-cyan: #22d3b1;
+  --color-blue: #7fd7f5;
+  --color-purple: #bc98ff;
+  --color-pink: #e4a3df;
+
+  /* UI Colors */
+  --background-primary: var(--color-base-00);
+  --background-primary-alt: var(--color-base-10);
+  --background-secondary: var(--color-base-05);
+  --background-secondary-alt: var(--color-base-00);
+  --text-normal: var(--color-base-100);
+  --text-muted: var(--color-base-70);
+  --text-faint: var(--color-base-60);
+
+  /* Text Formatting */
+  --text-bold: var(--color-yellow);
+  --text-italic: var(--color-pink);
+  --text-bold-italic: var(--color-purple);
+
+  /* Headers */
+  --text-title-h1: var(--color-purple);
+  --text-title-h2: var(--color-blue);
+  --text-title-h3: var(--color-green);
+  --text-title-h4: var(--color-yellow);
+  --text-title-h5: var(--color-pink);
+  --text-title-h6: var(--color-red);
+
+  /* Links & Accents */
+  --text-accent: var(--color-blue);
+  --text-link: var(--color-blue);
+  --text-a: var(--color-pink);
+  --text-a-hover: var(--color-purple);
+  --interactive-accent: var(--color-blue);
+  --text-selection: rgba(127, 215, 245, 0.25);
+
+  /* Code */
+  --code-normal: var(--color-base-100);
+  --code-background: var(--color-base-10);
+  --markup-code: var(--color-yellow);
+  --text-tag: var(--color-green);
+  --text-mark: var(--color-yellow);
+}
+
+/* Bright Icons */
+.view-action,
+.workspace-tab-header-inner-icon,
+.clickable-icon {
+  color: var(--color-base-100) !important;
+  opacity: 1 !important;
+}
+
+.view-action:hover,
+.clickable-icon:hover {
+  color: var(--color-blue) !important;
+}
+
+/* Text Formatting */
+strong {
+  color: var(--text-bold) !important;
+}
+
+em {
+  color: var(--text-italic) !important;
+}
+
+strong em,
+em strong {
+  color: var(--text-bold-italic) !important;
+}
+
+/* Code Blocks */
+.cm-inline-code {
+  color: var(--markup-code) !important;
+  background-color: var(--color-base-20) !important;
+}
+
+/* Tables */
+th, td {
+  border: 1px solid var(--color-base-25) !important;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 3px solid var(--color-blue);
+  color: var(--color-base-70);
+}
+
+/* Minimal Padding */
+.markdown-preview-view,
+.markdown-source-view {
+  padding: 15px 25px;
+}
+
+/* Active UI Elements */
+.is-active,
+.workspace-tab-header.is-active {
+  background-color: var(--color-base-20) !important;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-base-40);
+}
+
+/* Fix for bold+italic in editor view */
+.cm-strong.cm-em,
+.cm-em.cm-strong {
+  color: var(--text-bold-italic) !important;
+  font-style: italic !important;
+  font-weight: bold !important;
+}
+
+/* Additional editor-specific formatting fixes */
+.cm-s-obsidian .cm-strong {
+  color: var(--text-bold) !important;
+}
+
+.cm-s-obsidian .cm-em {
+  color: var(--text-italic) !important;
+  font-style: italic !important;
+}
