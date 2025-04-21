@@ -96,6 +96,7 @@ unsigned int tabspaces = 4;
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
 	/* 8 normal colors */
+// Default Colors
 //	[0] = "#000000", /* black   */
 //	[1] = "#ff5555", /* red     */
 //	[2] = "#50fa7b", /* green   */
@@ -123,28 +124,27 @@ static const char *colorname[] = {
 //	[255] = 0,
 	
 	/* 8 normal colors */
-	[0] = "#141414", /* black   */
-	[1] = "#fc6a67", /* red     */
-	[2] = "#a9dc76", /* green   */
-	[3] = "#ffd866", /* yellow  */
-	[4] = "#78dce8", /* blue    */
-	[5] = "#e991e3", /* magenta */
-	[6] = "#78e8c6", /* cyan    */
-	[7] = "#c7c7c7", /* white   */
+	[0] = "#181820",   /* black   (terminal.ansiBlack) */
+	[1] = "#fd604f",   /* red     (terminal.ansiRed) */
+	[2] = "#AFEA7B",   /* green   (terminal.ansiGreen) */
+	[3] = "#F5DF76",   /* yellow  (terminal.ansiYellow) */
+	[4] = "#7fd7f5",   /* blue    (terminal.ansiBlue) */
+	[5] = "#e4a3df",   /* magenta (terminal.ansiMagenta) */
+	[6] = "#22D3B1",   /* cyan    (terminal.ansiCyan) */
+	[7] = "#c8c8d5",   /* white   (terminal.ansiWhite) */
 
 	/* 8 bright colors */
-	[8]  = "#7c7c7c", /* black   */
-	[9]  = "#ff6764", /* red     */
-	[10] = "#a9f65c", /* green   */
-	[11] = "#ffd866", /* yellow  */
-	[12] = "#61eeff", /* blue    */
-	[13] = "#fd7df4", /* magenta */
-	[14] = "#61ffcf", /* cyan    */
-	[15] = "#fafafa", /* white   */
-
+	[8]  = "#424257",   /* bright black   (terminal.ansiBrightBlack) */
+	[9]  = "#ff5e4d",   /* bright red     (terminal.ansiBrightRed) */
+	[10] = "#aeff66",   /* bright green   (terminal.ansiBrightGreen) */
+	[11] = "#ffe66c",   /* bright yellow  (terminal.ansiBrightYellow) */
+	[12] = "#75dcff",   /* bright blue    (terminal.ansiBrightBlue) */
+	[13] = "#f691ee",   /* bright magenta (terminal.ansiBrightMagenta) */
+	[14] = "#00f5c6",   /* bright cyan    (terminal.ansiBrightCyan) */
+	[15] = "#ffffff",   /* bright white   (terminal.ansiBrightWhite) */
 	/* special colors */
 	[256] = "#141414", /* background */
-	[257] = "#c7c7c7", /* foreground */
+	[257] = "#c8c8d5", /* foreground */
 
 
 	[255] = 0,
@@ -206,6 +206,7 @@ static unsigned int defaultattr = 11;
 static uint forcemousemod = ShiftMask;
 const unsigned int mousescrollincrement = 5;
 const unsigned int scrollincrement = 5;
+const unsigned int bigscrollincrement = 10;
 /*
  * Internal mouse shortcuts.
  * Beware that overloading Button1 will disable the selection.
@@ -239,8 +240,10 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = scrollincrement} },
-	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = scrollincrement} },
+	{ ShiftMask,            XK_Up,     kscrollup,      {.i = scrollincrement} },
+	{ ShiftMask,            XK_Down,   kscrolldown,    {.i = scrollincrement} },
+	{ ShiftMask,            XK_Page_Up,   kscrollup,	{.i = bigscrollincrement} },
+	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = bigscrollincrement} },
 };
 
 /*

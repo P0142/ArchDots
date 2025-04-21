@@ -1,204 +1,199 @@
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Return if not running interactively
+[[ $- != *i* ]] && return
 
-# Lines configured by zsh-newuser-install
-HISTFILE=~/.histfile
-HISTSIZE=1500
-SAVEHIST=1500
-bindkey -e
-# End of lines configured by zsh-newuser-install
-# The following lines were added by compinstall
+# ====== Environment Variables ======
+# Python virtualenv
+export WORKON_HOME=$HOME/.local/python/virtualenvs
+source /usr/bin/virtualenvwrapper_lazy.sh
 
-# append history list to the history file; this is the default but we make sure
-# because it's required for share_history.
-setopt append_history
+# Go
+export GOPATH=$HOME/.local/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN
 
-# import new commands from the history file also in other zsh-session
-setopt share_history
+# Rust
+export RUSTBIN=$HOME/.cargo/bin
+export PATH=$PATH:$RUSTBIN
 
-# save each command's beginning timestamp and the duration to the history file
-setopt extended_history
+# Ruby
+export PATH=$PATH:$HOME/.local/share/gem/ruby/3.3.0/bin
 
-# remove command lines from the history list when the first character on the
-# line is a space
-setopt histignorespace
+# Java
+export AWT_TOOLKIT=MToolkit
+export _JAVA_AWT_WM_NONREPARENTING=1
 
-# if a command is issued that can't be executed as a normal command, and the
-# command is the name of a directory, perform the cd command to that directory.
-setopt auto_cd
+# Additional PATH entries
+export PATH=$PATH:$HOME/.local/bin:$HOME/.local/scripts
 
-# in order to use #, ~ and ^ for filename generation grep word
-# *~(*.gz|*.bz|*.bz2|*.zip|*.Z) -> searches for word not in compressed files
-# don't forget to quote '^', '~' and '#'!
-setopt extended_glob
+# ====== Prompt Configuration ======
+PROMPT='%B%F{magenta}%2~%f%b -> '
+RPROMPT='%B%F{cyan}触发%f%b@%B%F{magenta}%m%f%b'
 
-# display PID when suspending processes as well
-setopt longlistjobs
+# ====== History Settings ======
+HISTFILE=$HOME/.histfile
+HISTSIZE=5000
+SAVEHIST=2000
 
-# report the status of backgrounds jobs immediately
-setopt notify
+setopt append_history       # Append to history file
+setopt share_history        # Share history between sessions
+setopt extended_history     # Save timestamp and duration
+setopt inc_append_history   # Add commands immediately
+setopt histignorespace      # Ignore commands starting with space
+setopt no_nomatch           # Don't error on failed globs
 
-# whenever a command completion is attempted, make sure the entire command path
-# is hashed first.
-setopt hash_list_all
+# ====== Directory and Navigation ======
+setopt auto_cd              # cd by typing directory name
+setopt auto_pushd           # Push directories to stack
+setopt pushd_ignore_dups    # Don't push duplicates
+setopt complete_in_word     # Complete inside words
+setopt glob_complete        # Complete globs
+setopt extended_glob        # Enhanced globbing
 
-# not just at the end
-setopt completeinword
-
-# Don't send SIGHUP to background processes when the shell exits.
-setopt nohup
-
-# make cd push the old directory onto the directory stack.
-setopt auto_pushd
-
-# avoid "beep"ing
-setopt nobeep
-
-# don't push the same dir twice.
-setopt pushd_ignore_dups
-
-# * shouldn't match dotfiles. ever.
-setopt noglobdots
-
-# use zsh style word splitting
-setopt noshwordsplit
-
-# don't error out when unset parameters are used
-setopt unset
-
-
-zstyle :compinstall filename '/home/polar/.zshrc'
-zstyle ':completion:*' menu select
-zstyle ':completion::complete:*' gain-privileges 1
-
+# ====== Completion System ======
 autoload -Uz compinit
-compinit
-# End of lines added by compinstall
+zmodload zsh/complist
 
+# Completion cache
+typeset -g comppath=$HOME/.cache
+typeset -g compfile=$comppath/.zcompdump
+[[ -d $comppath ]] || mkdir -p $comppath
+[[ -w $compfile ]] || rm -f $compfile
 
-# Prompt
-PROMPT='[%n@%m %~]$ '
+compinit -u -d $compfile
 
+# Completion styles
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path $comppath
+zstyle ':completion:*' menu select
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
-alias vim='nvim'
-alias vi='nvim'
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'
+# ====== Key Bindings ======
+bindkey -e  # Emacs keybindings
 
-if [[ "$TERM" != dumb ]]; then
-    #a1# List files with colors (\kbd{ls \ldots})
-    alias ls="command ls ${ls_options:+${ls_options[*]}}"
-    #a1# List all files, with colors (\kbd{ls -la \ldots})
-    alias la="command ls -la ${ls_options:+${ls_options[*]}}"
-    #a1# List all files, with colors (\kbd{ls -la \ldots})
-    alias lal="command ls -la ${ls_options:+${ls_options[*]}}"
-    #a1# List files with long colored list, without dotfiles (\kbd{ls -l \ldots})
-    alias ll="command ls -l ${ls_options:+${ls_options[*]}}"
-    #a1# List files with long colored list, human readable sizes (\kbd{ls -hAl \ldots})
-    alias lh="command ls -hAl ${ls_options:+${ls_options[*]}}"
-    #a1# List files with long colored list, append qualifier to filenames (\kbd{ls -l \ldots})\\&\quad(\kbd{/} for directories, \kbd{@} for symlinks ...)
-    alias l="command ls -l ${ls_options:+${ls_options[*]}}"
+# Navigation
+# These functions search history for lines matching the current input
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+# Arrow keys - history search based on current input
+bindkey '^[[A' up-line-or-beginning-search    # Up arrow
+bindkey '^[[B' down-line-or-beginning-search  # Down arrow
+
+bindkey '^P' up-history		# (Ctrl+P) - Search backward through history regardless of current input
+bindkey '^N' down-history	# (Ctrl+N) - Search forward through history regardless of current input
+bindkey '^E' end-of-line	# (Ctrl+E) - Move cursor to End of line
+bindkey '^A' beginning-of-line	# (Ctrl+A) - Move cursor to Beginning of line
+
+# Enhanced Ctrl+Arrow navigation
+move-5chars-left() {
+	zle backward-char -n 5
+}
+
+move-5chars-right() {
+	zle forward-char -n 5
+}
+
+move-10chars-left() {
+	zle backward-char -n 10
+}
+
+move-10chars-right() {
+	zle forward-char -n 10
+}
+
+# Register the widgets
+zle -N move-5chars-left
+zle -N move-5chars-right
+zle -N move-10chars-left
+zle -N move-10chars-right
+
+# Bind keys (using terminfo where available)
+if [[ -n "$terminfo[kLFT5]" ]]; then
+	bindkey "$terminfo[kLFT5]" move-5chars-left     # Ctrl+Left
+	bindkey "$terminfo[kRIT5]" move-5chars-right	# Ctrl+Right
+	bindkey "$terminfo[kUP5]" move-10chars-left     # Ctrl+Up
+	bindkey "$terminfo[kDN5]" move-10chars-right    # Ctrl+Down
 else
-    alias la='command ls -la'
-    alias lal='command ls -la'
-    alias ll='command ls -l'
-    alias lh='command ls -hAl'
-    alias l='command ls -l'
+	# Fallback bindings for most terminals
+	bindkey '^[[1;5D' move-5chars-left	    # Ctrl+Left
+	bindkey '^[[1;5C' move-5chars-right	    # Ctrl+Right
+	bindkey '^[[1;5A' move-10chars-left	    # Ctrl+Up
+	bindkey '^[[1;5B' move-10chars-right	# Ctrl+Down
 fi
 
-# use ip from iproute2 with color support
-if ip -color=auto addr show dev lo >/dev/null 2>&1; then
-    alias ip='command ip -color=auto'
-fi
+# ====== Aliases ======
+# Core utilities
+alias cd..='cd ..'
+alias ls='ls --color=auto'
+alias la='ls -lah --color=auto'
+alias ll='ls -lh --color=auto'
+alias grep='grep --color=auto'
+alias ip='ip -color=auto'
 
-if [[ -r /proc/mdstat ]]; then
-    alias mdstat='cat /proc/mdstat'
-fi
+# Clipboard
+alias cb='xclip -selection clipboard'
+alias cbpng='xclip -selection clipboard -t image/png'
 
-# listing stuff
-#a2# Execute \kbd{ls -lSrah}
-alias dir="command ls -lSrah"
-#a2# Only show dot-directories
-alias lad='command ls -d .*(/)'
-#a2# Only show dot-files
-alias lsa='command ls -a .*(.)'
-#a2# Only files with setgid/setuid/sticky flag
-alias lss='command ls -l *(s,S,t)'
-#a2# Only show symlinks
-alias lsl='command ls -l *(@)'
-#a2# Display only executables
-alias lsx='command ls -l *(*)'
-#a2# Display world-{readable,writable,executable} files
-alias lsw='command ls -ld *(R,W,X.^ND/)'
-#a2# Display the ten biggest files
-alias lsbig="command ls -flh *(.OL[1,10])"
-#a2# Only show directories
-alias lsd='command ls -d *(/)'
-#a2# Only show empty directories
-alias lse='command ls -d *(/^F)'
-#a2# Display the ten newest files
-alias lsnew="command ls -rtlh *(D.om[1,10])"
-#a2# Display the ten oldest files
-alias lsold="command ls -rtlh *(D.Om[1,10])"
-#a2# Display the ten smallest files
-alias lssmall="command ls -Srl *(.oL[1,10])"
-#a2# Display the ten newest directories and ten newest .directories
-alias lsnewdir="command ls -rthdl *(/om[1,10]) .*(D/om[1,10])"
-#a2# Display the ten oldest directories and ten oldest .directories
-alias lsolddir="command ls -rthdl *(/Om[1,10]) .*(D/Om[1,10])"
+# Applications
+alias zath='zathura'
+alias ft='faketime'
 
+# Directory listings
+alias lsd='ls -d */'
+alias lss='ls -l *(s,S,t)'  # suid/sgid/sticky
+alias lsl='ls -l *(@)'      # symlinks
+alias lsx='ls -l *(*)'      # executables
 
-# some useful aliases
-#a2# Remove current empty directory. Execute \kbd{cd ..; rmdir \$OLDCWD}
-alias rmcdir='cd ..; rmdir $OLDPWD || cd $OLDPWD'
-
-#a2# ssh with StrictHostKeyChecking=no \\&\quad and UserKnownHostsFile unset
-alias insecssh='ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null"'
-#a2# scp with StrictHostKeyChecking=no \\&\quad and UserKnownHostsFile unset
-alias insecscp='scp -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null"'
-
-# smart cd function, allows switching to /etc when running 'cd /etc/fstab'
-function cd () {
-    if (( ${#argv} == 1 )) && [[ -f ${1} ]]; then
+# ====== Functions ======
+# Smart cd that can handle files
+cd() {
+    if (( $# == 1 )) && [[ -f $1 ]]; then
         [[ ! -e ${1:h} ]] && return 1
-        print "Correcting ${1} to ${1:h}"
+        print "Correcting $1 to ${1:h}"
         builtin cd ${1:h}
     else
         builtin cd "$@"
     fi
 }
 
-#f5# Create Directory and \kbd{cd} to it
-function mkcd () {
-    if (( ARGC != 1 )); then
-        printf 'usage: mkcd <new-directory>\n'
-        return 1;
+# Make directory and cd into it
+mkcd() {
+    (( $# != 1 )) && print "Usage: mkcd <dir>" && return 1
+    [[ ! -d $1 ]] && command mkdir -p $1
+    builtin cd $1
+}
+
+# Create faketime shell session with time from remote host
+ftsh() {
+    if (( $# != 1 )); then
+        echo "Usage: ftsh IP_ADDRESS"
+        return 1
     fi
-    if [[ ! -d "$1" ]]; then
-        command mkdir -p "$1"
-    else
-        printf '`%s'\'' already exists: cd-ing.\n' "$1"
+    local ip=$1
+    local time_format
+    # Get time from remote host and format it
+    if ! time_format=$(rdate -n "$ip" -p 2>/dev/null | awk '{print $2, $3, $4}' | date -f - "+%Y-%m-%d %H:%M:%S" 2>/dev/null); then
+        echo "Error: Could not get time from $ip" >&2
+        return 1
     fi
-    builtin cd "$1"
+    # Launch faketime shell
+    faketime "$time_format" zsh
 }
 
-#f5# List files which have been accessed within the last {\it n} days, {\it n} defaults to 1
-function accessed () {
-    emulate -L zsh
-    print -l -- *(a-${1:-1})
+# Launch ffuf to fuzz for subdomains/vhosts 
+fuzz_dns() {
+    ffuf -w /opt/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -H "Host: FUZZ.$1" -u http://$1 -ac
 }
 
-#f5# List files which have been changed within the last {\it n} days, {\it n} defaults to 1
-function changed () {
-    emulate -L zsh
-    print -l -- *(c-${1:-1})
+# Launch ffuf to fuzz web directories with quickhits
+fuzz_dir() {
+    ffuf -w /opt/SecLists/Discovery/Web-Content/quickhits.txt -u http://$1/FUZZ -ac
 }
 
-#f5# List files which have been modified within the last {\it n} days, {\it n} defaults to 1
-function modified () {
-    emulate -L zsh
-    print -l -- *(m-${1:-1})
-}
-
-
-
-
+# ====== Plugins ======
+# Syntax highlighting (must be at the end)
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null

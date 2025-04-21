@@ -1,5 +1,5 @@
 configuration {
-    modi: "drun, -modi  :'/home/polar/.config/rofi/rofi-time', p:'/home/polar/.config/rofi/rofi-power-menu'";
+    modi: "drun, -modi  :'/home/trigger/.config/rofi/rofi-time', p:'/home/trigger/.config/rofi/rofi-power-menu'";
     font: "SauceCodeProNerdFontMono 10";
     width: 33;
     lines: 1;
@@ -8,7 +8,7 @@ configuration {
     terminal: "st-256color";
     run-shell-command: "{terminal} -e {cmd}";
     case-sensitive: false;
-    cycle: false;
+    cycle: true;
     sidebar-mode: true;
     auto-select: false;
     matching: "regex";
@@ -18,9 +18,9 @@ configuration {
     click-to-exit: true;
     show-match: true;
     max-history-size: 20;
-    display-run: "⏻";
-    display-drun: "箱";
+    display-run: "⏻: $(cat /sys/class/power_supply/BAT0/capacity)%";
+    display-drun: "触发";
 }
 
-@theme "/home/polar/.config/rofi/themes/simple-theme.rasi"
+@theme "/home/trigger/.config/rofi/themes/simple-theme.rasi"
 

@@ -1,5 +1,5 @@
-
-xrdb /home/polar/.Xresources
-xsetroot -name " 箱 " &
-feh --bg-fill '/home/polar/Pictures/Backgrounds/5753b4a19e11c185e3284a869f83efe2_1396559921544259698.jpeg' &
+redshift -x
+redshift -t 3500K:3500K -l 44.97:93.26 -r &
+xsetroot -name " 触发 " &
+feh --bg-fill '/home/trigger/Documents/Backgrounds/ZZZSoloFull.png' &
 exec dwm
